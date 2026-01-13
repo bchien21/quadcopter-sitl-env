@@ -1,0 +1,4 @@
+# Default initial positions for x500_with_depth_camera's ros2_control fake system
+
+initial_positions:
+  virtual: 0

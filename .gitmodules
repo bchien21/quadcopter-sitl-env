@@ -1,0 +1,3 @@
+[submodule "drone_ws/src/x500_description"]
+	path = drone_ws/src/x500_description
+	url = https://github.com/Rahul-K-A/x500_description.git

@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: x500_description
+    relative_path: urdf/x500_depth.urdf.xacro
+  srdf:
+    relative_path: config/x500_with_depth_camera.srdf
+  package_settings:
+    author_name: Brian Chien
+    author_email: brianchien04172@gmail.com
+    generated_timestamp: 1768126406

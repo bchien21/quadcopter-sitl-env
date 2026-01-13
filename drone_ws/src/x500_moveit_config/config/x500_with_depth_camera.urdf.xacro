@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="x500_with_depth_camera">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import x500_with_depth_camera urdf file -->
+    <xacro:include filename="$(find x500_description)/urdf/x500_depth.urdf.xacro" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="x500_with_depth_camera.ros2_control.xacro" />
+
+
+    <xacro:x500_with_depth_camera_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>
