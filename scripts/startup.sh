@@ -12,6 +12,7 @@ tmux new-session -d -s $SESSION_NAME
 # 2. Pane 0 (Left): PX4 Simulation
 tmux send-keys -t $SESSION_NAME:0.0 "cd $PX4_DIR" C-m
 tmux send-keys -t $SESSION_NAME:0.0 "make px4_sitl gz_x500_depth" C-m
+#tmux send-keys -t $SESSION_NAME:0.0 "HEADLESS=1 make px4_sitl gz_x500_depth" C-m
 
 # 3. Pane 1 (Top Right): MicroXRCE Agent
 tmux split-window -h -t $SESSION_NAME:0.0
@@ -27,6 +28,13 @@ BRIDGE_ARGS="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock \
 /depth_camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo \
 /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image[gz.msgs.Image"
+
+# BRIDGE_ARGS="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock \
+# /depth_camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked \
+# /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo \
+# /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image[gz.msgs.Image \
+# /world/default/control@ros_gz_interfaces/srv/ControlWorld \
+# /world/default/set_pose@ros_gz_interfaces/srv/SetEntityPose"
 
 tmux send-keys -t $SESSION_NAME:0.2 "ros2 run ros_gz_bridge parameter_bridge $BRIDGE_ARGS --ros-args \
     -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image:=/depth_camera/image_raw \
