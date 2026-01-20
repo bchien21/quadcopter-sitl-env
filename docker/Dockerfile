@@ -45,6 +45,8 @@ RUN apt-get update && \
     apt purge -y ros-humble-ros-gz-sim && \
     apt install -y ros-humble-ros-gzharmonic ros-humble-ros-gzharmonic-sim ros-humble-ros-gzharmonic-bridge && \
     rm -rf /var/lib/apt/lists/*
+WORKDIR /workspace/PX4-Autopilot
+RUN make px4_sitl_default
 
 WORKDIR /workspace/drone_ws/src
 RUN git clone https://github.com/PX4/px4_msgs.git 

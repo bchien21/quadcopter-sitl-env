@@ -163,7 +163,8 @@ void OffboardControl::publish_trajectory_setpoint()
 
 	// AFTER 10 seconds (100 ticks): Do BOTH at once
 	if (offboard_setpoint_counter_ > 100) {
-		msg.position = {-3.0, 0.0, -5.0}; // Change Altitude
+		RCLCPP_INFO(this->get_logger(), "Sending Second Command");
+		msg.position = {-1.0, -2.0, -3.0}; // Change Altitude
 		msg.yaw = 1.5707;                // Change Yaw (90 deg)
 	}
 
