@@ -16,7 +16,7 @@ planner_configs:
     delay_collision_checking: 1  # Stop collision checking as soon as C-free parent found. default 1
 
 quad-base:
-  default_planner_config: RRTstarkConfigDefault
+  default_planner_config: RRTConnectkConfigDefault
   planner_configs:
     - RRTConnectkConfigDefault
     - RRTstarkConfigDefault
