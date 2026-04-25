@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# -lt 1 ]] ; then
-  echo 'Arguments: tag_name'
+  echo 'Usage: ./docker_run.sh <tag_name>   (same image tag you passed to docker_build.sh; any name you chose is fine)'
   exit 1
 elif [[ $# -eq 1 ]] ; then
   tagname=$1
@@ -21,7 +21,7 @@ elif [[ $# -eq 1 ]] ; then
     -e QT_X11_NO_MITSHM=1 \
     --privileged \
     --network=host \
-    --name tdss_container \
+    --name quadcopter-sitl-env \
     --workdir /workspace \
     ${tagname} 
 fi

@@ -40,9 +40,10 @@ tmux send-keys -t $SESSION_NAME:0.2 "ros2 run ros_gz_bridge parameter_bridge $BR
     -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image:=/depth_camera/image_raw \
     -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info:=/depth_camera/camera_info" C-m
 
-# 5. Pane 3: Static TF Publisher (world -> camera_link)
-tmux split-window -v -t $SESSION_NAME:0.0
-tmux send-keys -t $SESSION_NAME:0.3 "ros2 run tf2_ros static_transform_publisher --x 0.12 --y 0.03 --z 0.0 --qx 0 --qy 0 --qz 0 --qw 1 --frame-id world --child-frame-id camera_link" C-m
+# 5. Pane 3 (Bottom Left): Static TF Publisher (world -> camera_link)
+# tmux split-window -v -t $SESSION_NAME:0.2
+# # +90 deg about +Y (right-hand) between world and camera_link
+# tmux send-keys -t $SESSION_NAME:0.3 "ros2 run tf2_ros static_transform_publisher --x 0.12 --y 0.03 --z 0.0 --qx 0 --qy 0.7071067812 --qz 0 --qw 0.7071067812 --frame-id world --child-frame-id camera_link" C-m
 
 # Attach
 tmux set -g mouse on
