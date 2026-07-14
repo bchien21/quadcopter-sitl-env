@@ -56,3 +56,6 @@ CATKIN_IGNORE
 __pycache__/
 *.py[codz]
 *$py.class
+
+reports/
+conversations/

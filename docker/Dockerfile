@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nano screen tmux htop openssh-client unzip \
     ros-humble-moveit \
     ros-humble-moveit-ros-perception \
+    ros-humble-depth-image-proc \
     ros-humble-rtabmap-ros \
     ros-humble-octomap-server \
     ros-humble-octomap-ros \

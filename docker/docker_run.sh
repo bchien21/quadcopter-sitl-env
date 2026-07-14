@@ -15,6 +15,8 @@ elif [[ $# -eq 1 ]] ; then
     --gpus all \
     -e DISPLAY=$DISPLAY \
     -e NVIDIA_DRIVER_CAPABILITIES=all \
+    -e __NV_PRIME_RENDER_OFFLOAD=1 \
+    -e __GLX_VENDOR_LIBRARY_NAME=nvidia \
     -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
     -v ${PROJECT_ROOT}/drone_ws/src:/workspace/drone_ws/src \
     -v ${PROJECT_ROOT}/scripts:/workspace/scripts \

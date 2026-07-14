@@ -1,23 +1,21 @@
 sensors:
-  - default_sensor
-  - depthimage_sensor
-default_sensor:
-  filtered_cloud_topic: filtered_cloud
-  max_range: 10.0
-  max_update_rate: 10.0
-  padding_offset: 0.1
-  padding_scale: 1.0
-  point_cloud_topic: /depth_camera/points
-  point_subsample: 4
+  - pointcloud_sensor
+# The cloud on /depth_camera/points is generated from the raw depth image by a
+# depth_image_proc/point_cloud_xyz_node launched in demo.launch.py, so it is
+# correctly expressed in the camera's optical frame (unlike the Gazebo-bridged
+# cloud, whose data used the X-forward body convention).
+#
+# NOTE: every parameter of the plugin must be listed here. setParams() reads
+# them with a short-circuiting `&&` chain, so all keys after the first missing
+# one are silently ignored (this also bit us with DepthImageOctomapUpdater).
+pointcloud_sensor:
   sensor_plugin: occupancy_map_monitor/PointCloudOctomapUpdater
-depthimage_sensor:
-  far_clipping_plane_distance: 10.0
-  filtered_cloud_topic: filtered_cloud
-  image_topic: /depth_camera/image_raw
-  max_update_rate: 10.0
-  near_clipping_plane_distance: 0.1
+  point_cloud_topic: /depth_camera/points
+  # Match the simulated OakD-Lite depth clip (19.1 m) so the full sensor range
+  # is mapped. Unlike the depth-image plugin, max_range is applied at runtime.
+  max_range: 19.0
+  point_subsample: 1
   padding_offset: 0.1
   padding_scale: 1.0
-  queue_size: 10
-  sensor_plugin: occupancy_map_monitor/DepthImageOctomapUpdater
-  shadow_threshold: 0.2
+  max_update_rate: 10.0
+  filtered_cloud_topic: filtered_cloud

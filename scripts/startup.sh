@@ -3,7 +3,7 @@
 # Define the tmux session name
 SESSION_NAME="px4_session"
 
-PX4_DIR="PX4-Autopilot"
+PX4_DIR="/workspace/PX4-Autopilot"
 ROS_DISTRO="humble"
 
 # 1. Start Session
@@ -24,10 +24,11 @@ tmux split-window -v -t $SESSION_NAME:0.1
 
 # Define Bridge Arguments (Gazebo -> ROS)
 # Using line continuation (\) for readability
+# /camera_info is the depth camera's info topic (gz publishes it at root scope,
+# next to the sensor's <topic>depth_camera</topic>).
 BRIDGE_ARGS="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock \
-/depth_camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked \
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo \
-/world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image@sensor_msgs/msg/Image[gz.msgs.Image"
+/depth_camera@sensor_msgs/msg/Image[gz.msgs.Image \
+/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo"
 
 # BRIDGE_ARGS="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock \
 # /depth_camera/points@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked \
@@ -36,9 +37,12 @@ BRIDGE_ARGS="/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock \
 # /world/default/control@ros_gz_interfaces/srv/ControlWorld \
 # /world/default/set_pose@ros_gz_interfaces/srv/SetEntityPose"
 
+# Remaps: depth image + its camera_info as sibling topics (image_transport
+# expects camera_info in the same namespace as the image topic; MoveIt's
+# DepthImageOctomapUpdater relies on this to find the intrinsics).
 tmux send-keys -t $SESSION_NAME:0.2 "ros2 run ros_gz_bridge parameter_bridge $BRIDGE_ARGS --ros-args \
-    -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/image:=/depth_camera/image_raw \
-    -r /world/default/model/x500_depth_0/link/camera_link/sensor/IMX214/camera_info:=/depth_camera/camera_info" C-m
+    -r /depth_camera:=/depth_camera/depth/image_raw \
+    -r /camera_info:=/depth_camera/depth/camera_info" C-m
 
 # 5. Pane 3 (Bottom Left): Static TF Publisher (world -> camera_link)
 # tmux split-window -v -t $SESSION_NAME:0.2
