@@ -140,6 +140,9 @@ int main(int argc, char * argv[])
   bool planned = false;
   moveit::planning_interface::MoveGroupInterface::Plan plan;
 
+  // Let move_group resolve the start state from its latest monitored state.
+  move_group_interface.setStartStateToCurrentState();
+
   moveit::planning_interface::MoveGroupInterface::Plan msg;
   auto ok = static_cast<bool>(move_group_interface.plan(msg));
 

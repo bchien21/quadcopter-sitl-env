@@ -7,9 +7,14 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(gz-msgs10 REQUIRED)
+find_package(gz-transport13 REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(px4_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 add_executable(offboard_control src/offboard_control.cpp)
 target_include_directories(offboard_control PUBLIC
@@ -23,7 +28,22 @@ ament_target_dependencies(
   "std_msgs"
 )
 
-install(TARGETS offboard_control
+add_executable(gazebo_pose_tf src/gazebo_pose_tf.cpp)
+target_compile_features(gazebo_pose_tf PUBLIC cxx_std_17)
+ament_target_dependencies(
+  gazebo_pose_tf
+  geometry_msgs
+  rclcpp
+  tf2
+  tf2_ros
+)
+target_link_libraries(
+  gazebo_pose_tf
+  gz-msgs10::core
+  gz-transport13::core
+)
+
+install(TARGETS offboard_control gazebo_pose_tf
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

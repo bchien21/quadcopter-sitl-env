@@ -155,6 +155,12 @@ void OffboardControl::publish_offboard_control_mode()
  */
 void OffboardControl::publish_trajectory_setpoint()
 {
+	// PX4 retains the last setpoint while OffboardControlMode continues streaming.
+	// Publish the second position once instead of commanding it continuously.
+	if (offboard_setpoint_counter_ > 101) {
+		return;
+	}
+
 	TrajectorySetpoint msg{};
 	
 	// Default: Hover at -2.5m facing North (0 rad)

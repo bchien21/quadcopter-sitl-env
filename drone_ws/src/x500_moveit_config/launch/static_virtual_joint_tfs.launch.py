@@ -1,7 +1,8 @@
-from moveit_configs_utils import MoveItConfigsBuilder
-from moveit_configs_utils.launches import generate_static_virtual_joint_tfs_launch
+from launch import LaunchDescription
 
 
 def generate_launch_description():
-    moveit_config = MoveItConfigsBuilder("x500_with_depth_camera", package_name="x500_moveit_config").to_moveit_configs()
-    return generate_static_virtual_joint_tfs_launch(moveit_config)
+    # world -> base_link is published dynamically from the Gazebo vehicle pose.
+    # Keep this file because MoveIt's generated demo includes it by name, but do
+    # not start the generated identity static_transform_publisher.
+    return LaunchDescription()
