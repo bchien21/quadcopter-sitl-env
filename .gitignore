@@ -59,3 +59,6 @@ __pycache__/
 
 reports/
 conversations/
+
+# For reference only
+quadcopter-imitation-learning/

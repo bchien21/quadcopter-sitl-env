@@ -28,6 +28,14 @@ ament_target_dependencies(
   "std_msgs"
 )
 
+add_executable(octomap_mapping_mission src/octomap_mapping_mission.cpp)
+target_compile_features(octomap_mapping_mission PUBLIC cxx_std_17)
+ament_target_dependencies(
+  octomap_mapping_mission
+  rclcpp
+  px4_msgs
+)
+
 add_executable(gazebo_pose_tf src/gazebo_pose_tf.cpp)
 target_compile_features(gazebo_pose_tf PUBLIC cxx_std_17)
 ament_target_dependencies(
@@ -43,7 +51,7 @@ target_link_libraries(
   gz-transport13::core
 )
 
-install(TARGETS offboard_control gazebo_pose_tf
+install(TARGETS offboard_control octomap_mapping_mission gazebo_pose_tf
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
