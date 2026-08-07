@@ -7,6 +7,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(HDF5 REQUIRED COMPONENTS CXX)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
@@ -19,6 +20,7 @@ find_package(ros_gz_interfaces REQUIRED)
 find_package(cv_bridge REQUIRED)
 
 add_executable(planner src/planner.cpp)
+target_include_directories(planner PRIVATE ${HDF5_INCLUDE_DIRS})
 ament_target_dependencies(planner
   rclcpp
   moveit_core
@@ -26,8 +28,20 @@ ament_target_dependencies(planner
   moveit_ros_planning_interface
   moveit_msgs
 )
+target_link_libraries(planner ${HDF5_CXX_LIBRARIES})
 
-install(TARGETS planner
+add_executable(trajectory_dataset_collector src/trajectory_dataset_collector.cpp)
+target_include_directories(trajectory_dataset_collector PRIVATE ${HDF5_INCLUDE_DIRS})
+ament_target_dependencies(trajectory_dataset_collector
+  rclcpp
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  moveit_msgs
+)
+target_link_libraries(trajectory_dataset_collector ${HDF5_CXX_LIBRARIES})
+
+install(TARGETS planner trajectory_dataset_collector
   DESTINATION lib/${PROJECT_NAME}
 )
 

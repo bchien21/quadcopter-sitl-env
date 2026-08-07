@@ -13,7 +13,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 WORKSPACE_ROOT="${PROJECT_ROOT}/drone_ws"
 WORKSPACE_INSTALL="${WORKSPACE_ROOT}/install/setup.bash"
-MAP_FILE="${WORKSPACE_ROOT}/src/trajectory_dataset_collector/maps/depot.bt"
+MAP_FILE="${WORKSPACE_ROOT}/src/trajectory_dataset_collector/maps/warehouse.bt"
 
 # shellcheck disable=SC1090
 source "/opt/ros/${ROS_DISTRO}/setup.bash"

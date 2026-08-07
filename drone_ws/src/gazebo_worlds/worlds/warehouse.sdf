@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sdf version="1.9">
+  <world name="default">
+    <physics type="ode">
+      <max_step_size>0.004</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+      <real_time_update_rate>250</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.8</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic"/>
+
+    <!--
+      Static layout adapted from the TurtleBot 4 warehouse world:
+      https://github.com/turtlebot/turtlebot4_simulator/blob/humble/
+      turtlebot4_ignition_bringup/worlds/warehouse.sdf
+
+      The OpenRobotics Warehouse asset is the building shell. The MovAi shelf
+      assets create the furnished layout. Dynamic people and unrelated props
+      are intentionally omitted so mapping and planning use a static scene.
+    -->
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <plane>
+              <normal>0 0 1</normal>
+              <size>1 1</size>
+            </plane>
+          </geometry>
+        </collision>
+      </link>
+    </model>
+
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Warehouse/5</uri>
+      <name>warehouse</name>
+      <pose>0 0 -0.1 0 0 0</pose>
+    </include>
+
+    <!-- Large shelf rows along the back wall. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big/2</uri>
+      <name>shelf_big_0</name>
+      <pose>-8.5 -13 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big/2</uri>
+      <name>shelf_big_1</name>
+      <pose>6.5 -13 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big/2</uri>
+      <name>shelf_big_2</name>
+      <pose>-1.5 -13 0 0 0 0</pose>
+    </include>
+
+    <!-- Smaller shelves around the warehouse perimeter. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_3</name>
+      <pose>13.5 4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_4</name>
+      <pose>10 4.5 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_5</name>
+      <pose>13.5 -21 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_6</name>
+      <pose>13.5 -15 0 0 0 0</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_7</name>
+      <pose>0.4 -2 0 0 0 0</pose>
+    </include>
+
+    <!-- Shelf aisles used by the TurtleBot navigation challenge. -->
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big/2</uri>
+      <name>shelf_big_3</name>
+      <pose>3.5 9.5 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf_big/2</uri>
+      <name>shelf_big_4</name>
+      <pose>-1.3 18.5 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_0</name>
+      <pose>-10 21.5 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_1</name>
+      <pose>-7 23.6 0 0 0 1.57</pose>
+    </include>
+    <include>
+      <uri>https://fuel.gazebosim.org/1.0/MovAi/models/shelf/1</uri>
+      <name>shelf_2</name>
+      <pose>-4 21.5 0 0 0 1.57</pose>
+    </include>
+
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <world_frame_orientation>ENU</world_frame_orientation>
+      <latitude_deg>47.397971057728974</latitude_deg>
+      <longitude_deg>8.546163739800146</longitude_deg>
+      <elevation>0</elevation>
+    </spherical_coordinates>
+  </world>
+</sdf>

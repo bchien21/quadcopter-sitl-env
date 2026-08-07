@@ -28,6 +28,11 @@ def generate_launch_description():
             executable="gazebo_pose_tf",
             name="gazebo_pose_tf_publisher",
             output="screen",
+            parameters=[
+                {
+                    "pose_topic": "/world/default/dynamic_pose/info"
+                }
+            ],
         )
     )
 

@@ -48,6 +48,9 @@ RUN apt-get update && \
     apt install -y ros-humble-ros-gzharmonic ros-humble-ros-gzharmonic-sim ros-humble-ros-gzharmonic-bridge && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /workspace/PX4-Autopilot
+
+COPY drone_ws/src/gazebo_worlds/worlds/warehouse.sdf \
+    /workspace/PX4-Autopilot/Tools/simulation/gz/worlds/default.sdf
 RUN make px4_sitl_default
 
 WORKDIR /workspace/drone_ws/src
@@ -57,8 +60,6 @@ WORKDIR /workspace/drone_ws
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
     colcon build --symlink-install --parallel-workers $(nproc)"
 
-RUN cp /workspace/drone_ws/src/x500_description/sitl_mods/worlds/default.sdf /workspace/PX4-Autopilot/Tools/simulation/gz/worlds/default.sdf
-#RUN cp /workspace/drone_ws/src/x500_description/sitl_mods/models/oakd.sdf /workspace/PX4-Autopilot/Tools/simulation/gz/models/OakD-Lite/model.sdf
 COPY scripts/startup.sh /workspace/scripts/startup.sh
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
