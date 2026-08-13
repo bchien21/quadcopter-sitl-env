@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot name="x500_3dof">
+  <!-- Three prismatic joints let cuRobo plan x, y, and z while keeping rotation fixed. -->
+  <link name="world"/>
+  <link name="x_link"/>
+  <link name="y_link"/>
+
+  <link name="x500_base">
+    <visual>
+      <geometry><box size="1.0 1.0 1.0"/></geometry>
+      <material name="blue"><color rgba="0.1 0.3 0.8 1.0"/></material>
+    </visual>
+  </link>
+  <link name="x500_collision"/>
+
+  <joint name="x_joint" type="prismatic">
+    <parent link="world"/>
+    <child link="x_link"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-15.0" upper="15.0" velocity="3.0" effort="100.0"/>
+  </joint>
+
+  <joint name="y_joint" type="prismatic">
+    <parent link="x_link"/>
+    <child link="y_link"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-25.0" upper="25.0" velocity="3.0" effort="100.0"/>
+  </joint>
+
+  <joint name="z_joint" type="prismatic">
+    <parent link="y_link"/>
+    <child link="x500_base"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0.0" upper="12.6" velocity="3.0" effort="100.0"/>
+  </joint>
+
+  <joint name="x500_collision_joint" type="fixed">
+    <parent link="x500_base"/>
+    <child link="x500_collision"/>
+  </joint>
+</robot>

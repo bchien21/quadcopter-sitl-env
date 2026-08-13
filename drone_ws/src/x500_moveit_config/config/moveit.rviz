@@ -26,8 +26,17 @@ Visualization Manager:
       Scene Robot:
         Robot Alpha: 0.5
       Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Marker Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /curobo_trajectory
+      Name: cuRobo Trajectory
+      Value: true
   Global Options:
-    Fixed Frame: frame
+    Fixed Frame: world
   Tools:
     - Class: rviz_default_plugins/Interact
     - Class: rviz_default_plugins/MoveCamera
@@ -43,7 +52,7 @@ Visualization Manager:
         Z: 0.30
       Name: Current View
       Pitch: 0.5
-      Target Frame: frame
+      Target Frame: world
       Yaw: -0.623
 Window Geometry:
   Height: 975

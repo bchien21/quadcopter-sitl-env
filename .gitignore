@@ -59,3 +59,14 @@ __pycache__/
 
 reports/
 conversations/
+
+# ROS 2 colcon output
+/drone_ws/build/
+/drone_ws/install/
+/drone_ws/log/
+
+# Generated OctoMap conversion files
+/octomap_conversion/output/
+
+# Generated cuRobo datasets
+/curobo_planning/datasets/

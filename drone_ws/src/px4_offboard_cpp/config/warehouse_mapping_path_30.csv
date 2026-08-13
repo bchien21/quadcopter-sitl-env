@@ -1,0 +1,47 @@
+# Short collision-free coverage path for gazebo_worlds/worlds/warehouse.sdf.
+#
+# Values use PX4 NED coordinates: north, east, down, yaw_radians.
+# The route stays at 3 m altitude, avoids tall shelves and structural columns
+# horizontally, and clears the 1.8 m shelves vertically.
+
+# Take off, move north of the central columns, and enter the west aisle.
+0.0,0.0,-3.0,-1.5708
+2.0,0.0,-3.0,-1.5708
+2.0,-12.5,-3.0,-1.5708
+
+# West wall / west side of shelf_big_0.
+-10.0,-12.5,-3.0,1.5708
+-22.5,-12.5,-3.0,1.5708
+-10.0,-12.5,-3.0,-1.5708
+2.0,-12.5,-3.0,-1.5708
+
+# Aisle between shelf_big_0 and shelf_big_2.
+2.0,-5.5,-3.0,1.5708
+-10.0,-5.5,-3.0,1.5708
+-22.5,-5.5,-3.0,1.5708
+-10.0,-5.5,-3.0,-1.5708
+2.0,-5.5,-3.0,-1.5708
+
+# Aisle between shelf_big_2 and shelf_big_1.
+2.0,3.2,-3.0,1.5708
+-10.0,3.2,-3.0,1.5708
+-22.5,3.2,-3.0,1.5708
+-10.0,3.2,-3.0,-1.5708
+2.0,3.2,-3.0,-1.5708
+
+# East side of shelf_big_1.
+2.0,9.2,-3.0,-1.5708
+-10.0,9.2,-3.0,-1.5708
+-22.5,9.2,-3.0,-1.5708
+-10.0,9.2,-3.0,1.5708
+2.0,9.2,-3.0,1.5708
+
+# Middle and north cross-aisles, connected through the clear east corridor.
+2.0,13.7,-3.0,1.5708
+12.5,13.7,-3.0,1.5708
+12.5,0.0,-3.0,3.1416
+12.5,-12.5,-3.0,3.1416
+17.5,-12.5,-3.0,1.5708
+22.5,-12.5,-3.0,1.5708
+22.5,0.0,-3.0,0.0
+22.5,12.5,-3.0,0.0

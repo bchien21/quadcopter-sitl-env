@@ -7,6 +7,7 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(ament_index_cpp REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(gz-msgs10 REQUIRED)
 find_package(gz-transport13 REQUIRED)
@@ -32,6 +33,7 @@ add_executable(octomap_mapping_mission src/octomap_mapping_mission.cpp)
 target_compile_features(octomap_mapping_mission PUBLIC cxx_std_17)
 ament_target_dependencies(
   octomap_mapping_mission
+  ament_index_cpp
   rclcpp
   px4_msgs
 )
@@ -53,6 +55,9 @@ target_link_libraries(
 
 install(TARGETS offboard_control octomap_mapping_mission gazebo_pose_tf
   DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY config
+  DESTINATION share/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

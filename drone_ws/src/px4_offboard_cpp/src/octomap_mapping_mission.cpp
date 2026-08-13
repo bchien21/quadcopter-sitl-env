@@ -4,10 +4,16 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <fstream>
 #include <iostream>
 #include <limits>
 #include <memory>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <px4_msgs/msg/offboard_control_mode.hpp>
 #include <px4_msgs/msg/trajectory_setpoint.hpp>
 #include <px4_msgs/msg/vehicle_command.hpp>
@@ -24,6 +30,9 @@ public:
   OctomapMappingMission()
   : Node("octomap_mapping_mission")
   {
+    waypoints_ = load_waypoints();
+    manual_waypoint_ = waypoints_.back();
+
     // PX4's ROS 2 topics use the sensor-data QoS profile (best effort).
     const rmw_qos_profile_t sensor_data_profile = rmw_qos_profile_sensor_data;
     const auto px4_qos = rclcpp::QoS(
@@ -57,7 +66,7 @@ public:
       "requested after one second of setpoint streaming.");
     RCLCPP_INFO(
       get_logger(),
-      "After the four-waypoint sequence, publish px4_msgs/msg/TrajectorySetpoint "
+      "After the coverage sequence, publish px4_msgs/msg/TrajectorySetpoint "
       "commands on /octomap_mapping_mission/manual_setpoint.");
   }
 
@@ -70,25 +79,66 @@ private:
 
   // PX4 positions use the NED convention:
   //   +X is north, +Y is east, and +Z is down.
-  // Therefore, Z = -2.5 commands an altitude of 2.5 metres.
+  // Therefore, a negative Z value commands an altitude above the origin.
   //
-  // These positions trace a 4 m square in the Gazebo world. Confirm that the
-  // square is collision-free in the active world before running this node.
-  static constexpr std::array<Waypoint, 4> kWaypoints{{
-    {{{0.0F, 0.0F, -2.5F}}, 0.0F},
-    {{{4.0F, 0.0F, -2.5F}}, 0.0F},
-    {{{4.0F, 4.0F, -2.5F}}, 1.5707963F},
-    {{{0.0F, 4.0F, -2.5F}}, 3.1415927F},
-  }};
-
-  // The timer runs at 10 Hz. Fifty ticks therefore command each waypoint for
-  // five seconds. The fourth waypoint begins at 15 seconds, at which point the
-  // node also starts accepting manually published setpoints.
+  // The timer runs at 10 Hz. Manual setpoints are accepted when the final
+  // waypoint begins.
   static constexpr std::chrono::milliseconds kTimerPeriod{100};
   static constexpr uint64_t kOffboardRequestTick = 10;
-  static constexpr uint64_t kTicksPerWaypoint = 50;
-  static constexpr uint64_t kManualControlStartTick =
-    kTicksPerWaypoint * (kWaypoints.size() - 1);
+
+  std::vector<Waypoint> load_waypoints()
+  {
+    const std::string route = declare_parameter("mapping_route", "short");
+    if (route != "short" && route != "detailed") {
+      throw std::runtime_error("mapping_route must be 'short' or 'detailed'");
+    }
+
+    const double seconds = declare_parameter(
+      "seconds_per_waypoint", route == "short" ? 7.0 : 5.0);
+    if (!std::isfinite(seconds) || seconds <= 0.0) {
+      throw std::runtime_error("seconds_per_waypoint must be positive");
+    }
+    ticks_per_waypoint_ = static_cast<uint64_t>(
+      std::ceil(seconds * 1000.0 / kTimerPeriod.count()));
+
+    const std::string default_file =
+      ament_index_cpp::get_package_share_directory("px4_offboard_cpp") +
+      "/config/warehouse_mapping_path_" +
+      (route == "short" ? "30.csv" : "113.csv");
+    const std::string file = declare_parameter("waypoint_file", default_file);
+    std::ifstream input(file);
+
+    if (!input) {
+      throw std::runtime_error("Could not open waypoint file: " + file);
+    }
+
+    std::vector<Waypoint> waypoints;
+    std::string line;
+    while (std::getline(input, line)) {
+      if (line.empty() || line.front() == '#') {
+        continue;
+      }
+
+      std::replace(line.begin(), line.end(), ',', ' ');
+      std::istringstream values(line);
+      Waypoint waypoint;
+      if (!(values >> waypoint.position_ned[0] >> waypoint.position_ned[1] >>
+        waypoint.position_ned[2] >> waypoint.yaw_ned))
+      {
+        throw std::runtime_error("Invalid waypoint in: " + file);
+      }
+      waypoints.push_back(waypoint);
+    }
+
+    if (waypoints.empty()) {
+      throw std::runtime_error("Waypoint file is empty: " + file);
+    }
+
+    RCLCPP_INFO(
+      get_logger(), "Loaded %zu '%s' mapping waypoints (%.1f seconds each)",
+      waypoints.size(), route.c_str(), seconds);
+    return waypoints;
+  }
 
   // Called by timer_ every 100 ms.
   void timer_callback()
@@ -115,7 +165,7 @@ private:
     if (!scheduled_sequence_complete()) {
       RCLCPP_WARN(
         get_logger(),
-        "Ignoring manual setpoint: the four-waypoint sequence is still active");
+        "Ignoring manual setpoint: the coverage sequence is still active");
       return;
     }
 
@@ -166,14 +216,14 @@ private:
       scheduled_sequence_complete() && manual_setpoint_received_;
 
     const Waypoint & waypoint = use_manual_waypoint ?
-      manual_waypoint_ : kWaypoints[waypoint_index];
+      manual_waypoint_ : waypoints_[waypoint_index];
 
     if (!use_manual_waypoint && waypoint_index != last_logged_waypoint_index_) {
       RCLCPP_INFO(
         get_logger(),
         "Commanding waypoint %zu/%zu: NED=(%.1f, %.1f, %.1f), yaw=%.2f rad",
         waypoint_index + 1,
-        kWaypoints.size(),
+        waypoints_.size(),
         waypoint.position_ned[0],
         waypoint.position_ned[1],
         waypoint.position_ned[2],
@@ -211,13 +261,14 @@ private:
   std::size_t current_waypoint_index() const
   {
     const std::size_t calculated_index =
-      offboard_setpoint_counter_ / kTicksPerWaypoint;
-    return std::min(calculated_index, kWaypoints.size() - 1);
+      offboard_setpoint_counter_ / ticks_per_waypoint_;
+    return std::min(calculated_index, waypoints_.size() - 1);
   }
 
   bool scheduled_sequence_complete() const
   {
-    return offboard_setpoint_counter_ >= kManualControlStartTick;
+    return offboard_setpoint_counter_ >=
+           ticks_per_waypoint_ * (waypoints_.size() - 1);
   }
 
   uint64_t current_time_in_microseconds()
@@ -233,10 +284,12 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
 
   // Mission state.
+  std::vector<Waypoint> waypoints_;
+  uint64_t ticks_per_waypoint_{50};
   uint64_t offboard_setpoint_counter_{0};
   std::size_t last_logged_waypoint_index_{
     std::numeric_limits<std::size_t>::max()};
-  Waypoint manual_waypoint_{kWaypoints.back()};
+  Waypoint manual_waypoint_{};
   bool manual_setpoint_received_{false};
 };
 

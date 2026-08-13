@@ -1,0 +1,33 @@
+robot_cfg:
+  kinematics:
+    urdf_path: x500_3dof.urdf
+    asset_root_path: .
+    base_link: world
+    tool_frames: [x500_base]
+    collision_link_names: [x500_base, x500_collision]
+    collision_spheres:
+      x500_base:
+        - center: [0.0, 0.0, 0.0]
+          radius: 0.25
+        - center: [0.3, 0.0, 0.0]
+          radius: 0.2
+        - center: [-0.3, 0.0, 0.0]
+          radius: 0.2
+        - center: [0.0, 0.3, 0.0]
+          radius: 0.2
+        - center: [0.0, -0.3, 0.0]
+          radius: 0.2
+      x500_collision:
+        - center: [0.0, 0.0, 0.4]
+          radius: 0.05
+    collision_sphere_buffer: 0.0
+    self_collision_ignore: {}
+    self_collision_buffer: {}
+    mesh_link_names: []
+    cspace:
+      joint_names: [x_joint, y_joint, z_joint]
+      default_joint_position: [0.0, 0.0, 3.0]
+      null_space_weight: [1.0, 1.0, 1.0]
+      cspace_distance_weight: [1.0, 1.0, 1.0]
+      max_acceleration: 5.0
+      max_jerk: 50.0

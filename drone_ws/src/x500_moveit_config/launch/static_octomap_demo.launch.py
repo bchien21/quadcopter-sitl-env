@@ -1,7 +1,8 @@
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, SetParameter
+from launch_ros.substitutions import FindPackageShare
 from moveit_configs_utils import MoveItConfigsBuilder
 from moveit_configs_utils.launches import generate_demo_launch
 
@@ -26,6 +27,9 @@ def generate_launch_description():
         [
             DeclareLaunchArgument(
                 "map_file",
+                default_value=PathJoinSubstitution(
+                    [FindPackageShare("moveit_octomaps"), "maps", "warehouse.bt"]
+                ),
                 description="Absolute path to the saved binary OctoMap (.bt)",
             ),
             DeclareLaunchArgument(
