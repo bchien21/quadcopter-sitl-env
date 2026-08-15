@@ -63,7 +63,7 @@ def main():
     )
     parser.add_argument("--num-trajectories", type=int, default=1000)
     parser.add_argument("--batch-size", type=int, default=64)
-    parser.add_argument("--start", type=float, nargs=3, default=[0.0, 0.0, 3.0])
+    parser.add_argument("--start", type=float, nargs=3, default=[2.0, -6.0, 2.5])
     parser.add_argument("--goal-z-range", type=float, default=1.5)
     parser.add_argument("--clearance", type=float, default=0.55)
     parser.add_argument("--seed", type=int, default=0)

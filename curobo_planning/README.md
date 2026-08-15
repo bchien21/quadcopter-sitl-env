@@ -10,12 +10,10 @@ First generate `octomap_conversion/output/warehouse_esdf.npz`. Then, inside the 
 
 ```bash
 cd /workspace
-python3 curobo_planning/collect_trajectories.py \
-  --num-trajectories 1000 \
-  --batch-size 64
+./scripts/run_batch_motion_planner.sh 1000 128
 ```
 
-The default output is `curobo_planning/datasets/warehouse_trajectories.h5`. Existing files are protected; use `--overwrite` when replacement is intentional.
+The two arguments are the total number of trajectories and the GPU batch size. They default to `1000` and `128`. The script replaces `curobo_planning/datasets/warehouse_trajectories.h5` on every run.
 
 The HDF5 file stores variable-length trajectories without resampling:
 
@@ -33,7 +31,7 @@ trajectory = trajectory_points[begin:end]
 goal = goals[i]
 ```
 
-All positions use the `world` frame and are `(x, y, z)` in metres. The default start is `(0, 0, 3)`, and sampled goal heights are between `1.5` and `4.5` metres. Every orientation is the identity quaternion `(w, x, y, z) = (1, 0, 0, 0)`.
+All positions use the `world` frame and are `(x, y, z)` in metres. The default start is `(2, -6, 2.5)`, in the aisle between two large shelves. Sampled goal heights are between `1.0` and `4.0` metres. Every orientation is the identity quaternion `(w, x, y, z) = (1, 0, 0, 0)`.
 
 ## Visualize one trajectory
 

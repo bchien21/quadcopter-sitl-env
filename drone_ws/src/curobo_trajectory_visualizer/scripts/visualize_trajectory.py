@@ -15,17 +15,18 @@ class TrajectoryVisualizer(Node):
 
         dataset_path = self.declare_parameter("dataset", "").value
         trajectory_index = self.declare_parameter("trajectory_index", 0).value
-        num_trajectories = self.declare_parameter("num_trajectories", 10).value
+        num_trajectories = self.declare_parameter("num_trajectories", 0).value
 
-        if not 1 <= num_trajectories <= 10:
-            raise ValueError("num_trajectories must be between 1 and 10")
+        if num_trajectories < 0:
+            raise ValueError("num_trajectories must be nonnegative (0 displays all)")
 
         markers = []
         with h5py.File(dataset_path) as dataset:
             if not 0 <= trajectory_index < len(dataset["goals"]):
                 raise IndexError(f"Dataset contains {len(dataset['goals'])} trajectories")
             frame_id = str(dataset.attrs.get("frame_id", "world"))
-            stop = min(trajectory_index + num_trajectories, len(dataset["goals"]))
+            stop = (len(dataset["goals"]) if num_trajectories == 0 else
+                    min(trajectory_index + num_trajectories, len(dataset["goals"])))
 
             for index in range(trajectory_index, stop):
                 begin, end = dataset["trajectory_offsets"][index : index + 2]

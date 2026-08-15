@@ -69,4 +69,5 @@ conversations/
 /octomap_conversion/output/
 
 # Generated cuRobo datasets
-/curobo_planning/datasets/
+# /curobo_planning/datasets/
+# /curobo_planning/diffusion_outputs/
